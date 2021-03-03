@@ -1,16 +1,51 @@
 import './Table.css';
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as actions from '../../actions';
 
 class Table extends Component{
+    state={
+        movieList:[]
+    };
+    editClicked(index){
+        let movieList=[...this.state.movieList];
+        movieList[index].isEditable=!movieList[index].isEditable;
+        this.setState({movieList:movieList});
+    }
+    editText(index,event){
+        let movieList=[...this.state.movieList];
+        movieList[index][event.target.name]=event.target.value;
+        this.setState({movieList:movieList});
+    }
+    doneClicked(index,event){
+       this.editClicked(index,event);
+
+    }
+    deleteClicked(index,event){
+        let movieList=[...this.state.movieList];
+        movieList.splice(index,1);
+        this.props.setdata({movieList:movieList});
+    }
+    static getDerivedStateFromProps(props,state){
+        let movieList=[...props.data.movieList];
+        return{movieList:movieList};
+    }
     render(){
-        let rowVals=this.props.movieList.map(el=>{
+        let rowVals=this.state.movieList.map((el,index)=>{
             return(
                 <tr>
-                <td>{el.movieName}</td>
+                <td>{el.isEditable?<input type='text' value={el.movieName} onChange={this.editText.bind(this,index)} name='movieName'/>:el.movieName}</td>
                 <td>{el.directorName}</td>
                 <td class='actions'>
-                    <button className='add-movie' onClick="">Edit</button>
-                    <button className='add-movie' onClick="">Delete</button>
+                {el.isEditable?
+                <button onClick={this.doneClicked.bind(this,index)}>Done</button>
+                :
+                <div>
+                <button className='add-movie' onClick={this.editClicked.bind(this,index)}>Edit</button>
+                <button className='delete-movie' onClick={this.deleteClicked.bind(this,index)}>Delete</button>
+                </div>
+                }
+                    
                 </td>
                 </tr>
             );
@@ -31,4 +66,14 @@ class Table extends Component{
         );
     }
 }
-export default Table;
+const mapStateToProps  = (store) => {
+    return {
+        data: store.data,
+      }
+  }
+  const mapDispatchToProps = (dispatch) => {
+    return {
+        setdata: (data) => dispatch(actions.setdata(data))
+    }
+  }
+export default connect(mapStateToProps , mapDispatchToProps)(Table);
