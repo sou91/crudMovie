@@ -1,6 +1,6 @@
 import './Table.css';
 import React, { Component } from 'react';
-import { connect,useSelector} from 'react-redux';
+import { connect} from 'react-redux';
 import * as actions from '../../actions';
 
 class Table extends Component{
