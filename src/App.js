@@ -32,7 +32,7 @@ saveMovie(){
   axios.delete('movies.json').then(response => {
     for(var i in this.props.data.movieList){
       axios.post('movies.json', this.props.data.movieList[i]).then((response2) => {
-        alert('yay');
+        
     }).catch(error =>{
         console.log(error);
     })

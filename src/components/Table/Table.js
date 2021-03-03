@@ -1,6 +1,6 @@
 import './Table.css';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import { connect,useSelector} from 'react-redux';
 import * as actions from '../../actions';
 
 class Table extends Component{
@@ -16,17 +16,18 @@ class Table extends Component{
         let movieList=[...this.state.movieList];
         movieList[index][event.target.name]=event.target.value;
         this.setState({movieList:movieList});
+        
     }
     doneClicked(index,event){
        this.editClicked(index,event);
-
+       this.props.setdata({movieList:this.state.movieList});
     }
-    deleteClicked(index,event){
+    deleteClicked(index){
         let movieList=[...this.state.movieList];
         movieList.splice(index,1);
         this.props.setdata({movieList:movieList});
     }
-    static getDerivedStateFromProps(props,state){
+    static getDerivedStateFromProps(props){
         let movieList=[...props.data.movieList];
         return{movieList:movieList};
     }
